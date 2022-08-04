@@ -10,7 +10,7 @@ class App extends Component{
       temperature: '',
       description: '',
       humidity: '',
-      wind_space: '',
+      wind_speed: '',
       city: '',
       country: '',
       error: null
@@ -21,23 +21,29 @@ class App extends Component{
     const {city, country} = e.target.elements;
     const cityValue = city.value;
     const countryValue = country.value;
+  
+    if(cityValue && countryValue){
+      const API_URL =`https://api.openweathermap.org/data/2.5/weather?q=${cityValue},${countryValue}&appid=${WEATHER_KEY}&units=metric`;
+
+
+      const response = await fetch(API_URL);
+      const data = await response.json();
+
+
+      this.setState({
+        temperature: data.main.temp,
+        description: data.weather[0].description,
+        humidity: data.main.humidity,
+        wind_speed: data.wind.speed,
+        city: data.name,
+        country: data.sys.country,
+        error: null
+      });      
+    }else{
+      this.setState({error: 'Ingrese una ciudad y un pais!'})
+    }
+
     
-
-    const API_URL =`https://api.openweathermap.org/data/2.5/weather?q=${cityValue},${countryValue}&appid=${WEATHER_KEY}&units=metric`;
-
-    const response = await fetch(API_URL);
-    const data = await response.json();
-    console.log(data)
-
-    this.setState({
-      temperature: data.main.temp,
-      description: data.weather[0].description,
-      humidity: data.main.humidity,
-      wind_space: data.wind.speed,
-      city: data.name,
-      country: data.sys.country,
-      error: null
-    })
   }
 
 
